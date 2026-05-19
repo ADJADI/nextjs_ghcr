@@ -1,0 +1,12 @@
+# Run from WSL: docker compose up --build
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-development}
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_APP_VERSION: ${APP_VERSION:-development}

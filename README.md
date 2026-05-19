@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nextjs_ghcr
 
-## Getting Started
+Next.js app with ESLint, Docker (via WSL), and GitHub Actions publishing versioned images to GHCR.
 
-First, run the development server:
+Inspired by [cda_ghcr](../cda_ghcr).
+
+## Prerequisites
+
+- [WSL 2](https://learn.microsoft.com/en-us/windows/wsl/install) with a Linux distro (Ubuntu recommended)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) with **WSL 2 integration** enabled for your distro
+- Node.js 22+ on Windows (local dev) or in WSL
+
+## Local development (Windows)
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ESLint
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run lint
+```
 
-## Learn More
+## Docker via WSL
 
-To learn more about Next.js, take a look at the following resources:
+**Docker Desktop** must be running, with **Settings → Resources → WSL integration** enabled for your distro. If you see `docker.sock: no such file or directory` in WSL, enable integration and restart Docker Desktop.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+From **WSL**, go to the project (Windows path is mounted under `/mnt/c/...`):
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cd /mnt/c/Users/ADJADI/Desktop/workspace/CEFIM/docker/nextjs_ghcr
+chmod +x scripts/docker-wsl.sh
+./scripts/docker-wsl.sh
+# or: docker compose up --build
+```
 
-## Deploy on Vercel
+With an explicit version label:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+APP_VERSION=v1.0.0 docker compose up --build
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+API: [http://localhost:3000/api/version](http://localhost:3000/api/version)
+
+## GitHub & GHCR
+
+1. Create a repository on GitHub (e.g. `2iAcademy/nextjs_ghcr`).
+2. Push this project and enable **Actions** and **Packages** for the repo.
+3. Push to branch `ghcr` to build and publish `latest` + branch tags.
+4. Create a release tag for semver images:
+
+   ```bash
+   git tag v1.0.0
+   git push origin v1.0.0
+   ```
+
+Images are published to `ghcr.io/<owner>/<repo>` with tags like `latest`, `v1.0.0`, `v1.0`, `v1`.
+
+### Connect remote
+
+```bash
+git remote add origin https://github.com/2iAcademy/nextjs_ghcr.git
+git branch -M ghcr
+git push -u origin ghcr
+```
+
+Replace the org/repo with your own if needed.
+
+## CI workflows
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| `ci.yaml` | push/PR on `main`, `master`, `ghcr` | ESLint + TypeScript check |
+| `docker-publish.yaml` | push on `ghcr`, tags `v*.*.*` | Build & push Docker image to GHCR |

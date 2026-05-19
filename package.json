@@ -1,12 +1,13 @@
 {
   "name": "nextjs_ghcr",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "Next.js app with Docker, ESLint, and GHCR publishing via GitHub Actions",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "next": "16.2.6",
