@@ -12,18 +12,17 @@ on:
       - master
       - ghcr
 
+env:
+  NODE_IMAGE: node:25-alpine3.23
+
 jobs:
   lint:
     runs-on: ubuntu-latest
+    container:
+      image: ${{ env.NODE_IMAGE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-          cache: npm
 
       - name: Install dependencies
         run: npm ci
