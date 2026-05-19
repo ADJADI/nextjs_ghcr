@@ -15,18 +15,25 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
-    # Must match Dockerfile base image (env context is not allowed here)
-    container:
-      image: node:25-alpine3.23
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build CI image from Dockerfile
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: ci
+          load: true
+          tags: nextjs-ghcr:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: ESLint
-        run: npm run lint
+        run: docker run --rm nextjs-ghcr:ci npm run lint
 
       - name: Typecheck
-        run: npx tsc --noEmit
+        run: docker run --rm nextjs-ghcr:ci npx tsc --noEmit

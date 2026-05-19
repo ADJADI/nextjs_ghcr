@@ -6,6 +6,10 @@ FROM base AS deps
 COPY package.json package-lock.json ./
 RUN npm ci
 
+# CI target: same Node/deps as production build (used by .github/workflows/ci.yaml)
+FROM deps AS ci
+COPY . .
+
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
