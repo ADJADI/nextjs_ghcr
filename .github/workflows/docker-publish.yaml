@@ -57,6 +57,3 @@ jobs:
             APP_VERSION=${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Cleanup
-        uses: docker/cleanup-action@v5
