@@ -48,8 +48,8 @@ API: [http://localhost:3000/api/version](http://localhost:3000/api/version)
 
 ## GitHub & GHCR
 
-1. Create a repository on GitHub (e.g. `2iAcademy/nextjs_ghcr`).
-2. Push this project and enable **Actions** and **Packages** for the repo.
+1. Repository: [ADJADI/nextjs_ghcr](https://github.com/ADJADI/nextjs_ghcr).
+2. Enable **Actions** and **Packages** for the repo.
 3. Push to branch `ghcr` to build and publish `latest` + branch tags.
 4. Create a release tag for semver images:
 
@@ -60,15 +60,12 @@ API: [http://localhost:3000/api/version](http://localhost:3000/api/version)
 
 Images are published to `ghcr.io/<owner>/<repo>` with tags like `latest`, `v1.0.0`, `v1.0`, `v1`.
 
-### Connect remote
+### Remote
 
 ```bash
-git remote add origin https://github.com/2iAcademy/nextjs_ghcr.git
-git branch -M ghcr
+git remote set-url origin https://github.com/ADJADI/nextjs_ghcr.git
 git push -u origin ghcr
 ```
-
-Replace the org/repo with your own if needed.
 
 ## CI workflows
 
