@@ -12,14 +12,12 @@ on:
       - master
       - ghcr
 
-env:
-  NODE_IMAGE: node:25-alpine3.23
-
 jobs:
   lint:
     runs-on: ubuntu-latest
+    # Must match Dockerfile base image (env context is not allowed here)
     container:
-      image: ${{ env.NODE_IMAGE }}
+      image: node:25-alpine3.23
     steps:
       - name: Checkout
         uses: actions/checkout@v4
